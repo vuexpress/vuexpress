@@ -1,7 +1,7 @@
 {
   "name": "@doweb/vuexpress",
   "version": "1.0.5",
-  "description": "Vue + Express.js = VueXpress / A server side rendering engine for Express.js. Use .vue files as you express.js templates.",
+  "description": "Vue + Express.js = VueXpress / A server side rendering engine for Express.js. Use .vue files as your express.js templates.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
