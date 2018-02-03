@@ -1,4 +1,4 @@
-<p align="center"><a href="https://vuejs.org" target="_blank"><img width="100" src="//i.imgur.com/gVS6Mja.png" alt="Vue logo"></a></p>
+<p align="center"><img width="100" src="https://i.imgur.com/gVS6Mja.png" alt="Vuexpress - Vue + express.js"></p>
 
 <p align="center">
 
