@@ -17,7 +17,8 @@ const defaultOptions = {
     config: Object.create(null),
     outputPath: '/tmp/vuexpress_ssr',
     cssOutputPath: 'style.css',
-    publicPath: ''
+    publicPath: 'public',
+    cache: true,
 };
 
 /**
@@ -47,7 +48,7 @@ class Compiler {
      * @memberof Compiler
      */
     import(request) {
-        if (Compiler.cacheMap.has(request)) {
+        if (this.options.cache && Compiler.cacheMap.has(request)) {
             return Promise.resolve(Compiler.cacheMap.get(request));
         }
         const compilingWaitingQueue = compilingWaitingQueueMap.get(request);

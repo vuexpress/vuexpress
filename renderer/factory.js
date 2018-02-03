@@ -34,6 +34,7 @@ function rendererFactory(basePath, vOptions) {
         outputPath: options.outputPath,
         cssOutputPath: options.cssOutputPath,
         publicPath: options.publicPath,
+        cache: options.cache,
     };
     const compiler = new Compiler(mfs, compilerOptions);
 
