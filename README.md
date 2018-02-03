@@ -49,12 +49,12 @@ const renderer = vueRenderer(options);
 app.use(renderer);
 
 app.get('/', function(req, res) {
-    res.render('main', { myVar1: 'my variable one' });
+    res.render('example', { myVar1: 'my variable one' });
 });
 
 app.get('/plain', function(req, res) {
     // render template without html head and body
-    res.render('main', { myVar1: 'my variable one' }, { plain: true });
+    res.render('example', { myVar1: 'my variable one' }, { plain: true });
 });
 ```
 
