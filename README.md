@@ -60,6 +60,8 @@ app.get('/plain', function(req, res) {
 
 File: example.vue
 
+For head configuration check out [vue-head](https://github.com/ktquez/vue-head)
+
 ```
 <template>
     <div id="app">
@@ -68,13 +70,20 @@ File: example.vue
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: 'Example',
         data() {
             return {
                 myVar: 'Hello',
-                myVar2: ''
+                myVar2: '',
+                asyncExample: ''
             };
+        },
+        async asyncData() {
+            let res = await axios.get('http://example.org/');
+            return {asyncExample: res.data.example}
         },
         metaInfo: {
             title: 'Default Title',
