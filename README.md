@@ -12,6 +12,12 @@
 
 VueXpress is a template engine for express.js. You can easily rendering *.vue templates on the server. Check out the usage information.
 
+## Install
+
+```bash
+$ npm i @doweb/vuexpress --save
+```
+
 ## Usage
 
 File: example.js

@@ -22,9 +22,7 @@ function vueRenderer(baseOptions) {
     return (req, res, next) => {
         const url = req.originalUrl;
         res.render = (vueFilePath, state, options) => {
-
             vueFilePath = vueFilePath + '.vue';
-
             res.set('Content-Type', 'text/html');
             const filePath = path.resolve(basePath, vueFilePath);
             const renderOptions = Object.assign({}, {url}, options);
@@ -40,11 +38,13 @@ function vueRenderer(baseOptions) {
             });
         };
         res.renderToStream = (vueFilePath, state, options) => {
+            vueFilePath = vueFilePath + '.vue';
             const filePath = path.resolve(basePath, vueFilePath);
             const renderOptions = Object.assign({}, {url}, options);
             return renderer.renderToStream(filePath, state, renderOptions);
         };
         res.renderToString = (vueFilePath, state, options) => {
+            vueFilePath = vueFilePath + '.vue';
             const renderOptions = Object.assign({}, {url}, options);
             const filePath = path.resolve(basePath, vueFilePath);
             return renderer.renderToString(filePath, state, renderOptions);
