@@ -1,10 +1,12 @@
 {
   "name": "@doweb/vuexpress",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Vue + Express.js = VueXpress / A server side rendering engine for Express.js. Use .vue files as your express.js templates.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src/ -d lib/",
+    "prepublish": "npm run build",
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
@@ -16,28 +18,68 @@
   "homepage": "https://github.com/vuexpress/vuexpress#readme",
   "keywords": [
     "vue",
+    "vuejs2",
+    "vue2",
+    "vue-components",
+    "vue-component",
+    "javascript",
     "expressjs",
     "vuejs",
     "template",
     "engine",
-    "node"
+    "node",
+    "nodejs",
+    "rendering",
+    "templates",
+    "express",
+    "server",
+    "ssr"
   ],
+  "peerDependencies": {
+    "vue": ">=2.0.0",
+    "vuex": ">=2.0.0",
+    "vue-loader": ">=9.4.0",
+    "node-sass": ">=4.7.2",
+    "sass-loader": ">=6.0.6",
+    "extract-text-webpack-plugin": ">=3.0.2",
+    "webpack": ">=3.10.0",
+    "babel-core": ">=6.26.0",
+    "babel-loader": ">=7.1.1",
+    "babel-plugin-transform-object-rest-spread": ">=6.23.0",
+    "babel-preset-env": ">=1.2.2"
+  },
   "dependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.2.2",
     "babel-regenerator-runtime": "^6.5.0",
+    "css-loader": "^0.28.9",
+    "extract-text-webpack-plugin": "^3.0.2",
     "memory-fs": "^0.4.1",
     "node-sass": "^4.7.2",
     "node-version": "^1.0.0",
     "null-loader": "^0.1.1",
+    "recursive-readdir-sync": "^1.0.6",
+    "sass-loader": "^6.0.6",
     "serialize-javascript": "^1.3.0",
+    "vue": "^2.5.13",
+    "vue-loader": "^14.1.1",
     "vue-meta": "^1.4.2",
+    "vue-server-renderer": "^2.5.13",
+    "vue-template-compiler": "^2.5.13",
+    "vuex": "^3.0.1",
     "webpack": "^3.10.0",
-    "webpack-merge": "^4.1.1",
-    "webpack-node-externals": "^1.6.0"
+    "webpack-merge": "^4.1.1"
   },
   "author": "Dominik Weber",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-preset-flow": "^6.23.0",
+    "eslint": "^4.17.0",
+    "eslint-plugin-flowtype": "^2.42.0",
+    "flow-bin": "^0.64.0"
+  }
 }

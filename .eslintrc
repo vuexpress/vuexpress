@@ -1,0 +1,10 @@
+{
+  "root": true,
+  "plugins": [
+    "flowtype"
+  ],
+  "extends": [
+    "plugin:flowtype/recommended"
+  ],
+  "globals": {}
+}

@@ -18,6 +18,12 @@ VueXpress is a template engine for express.js. You can easily rendering *.vue te
 $ npm i @doweb/vuexpress --save
 ```
 
+You need to install the peer dependencies as well
+
+```bash
+$ npm i vue vuex vue-loader css-loader vue-template-compiler node-sass sass-loader extract-text-webpack-plugin webpack babel-core babel-loader babel-plugin-transform-object-rest-spread babel-preset-env --save
+```
+
 ## Usage
 
 File: example.js
@@ -30,8 +36,18 @@ const app = express();
 let options = {
     // folder with your views
     views: './views',
+    // precompile the template
+    preCompile: ['example.vue'],
+    // pre compile all templates in the view folder
+    preCompileAll: true,
     // cache templates
     cache: true,
+    // meta info - check out https://github.com/ktquez/vue-head for more information
+    metaInfo: {
+      title: 'Default Title'
+    },
+    // extract css to file, otherwise it will be inline
+    extractCSS: true,
     // css output folder, extracted styles from your *.vue files
     cssOutputPath: 'css/style.css',
     // path to your web root
@@ -48,7 +64,7 @@ let options = {
         // custom webpack config
     },
     onError: (err) => {}, // error handler
-    onReady: () => {} // error handler
+    onReady: () => {} // ready event handler, when completed the work of initialization
 };
 
 const renderer = vueRenderer(options);
@@ -60,7 +76,7 @@ app.get('/', function(req, res) {
 
 app.get('/plain', function(req, res) {
     // render template without html head and body
-    res.render('example', { myVar1: 'my variable one' }, { plain: true });
+    res.render('example', { myVar1: 'my variable one' }, { plain: true, includeCSS: false });
 });
 ```
 
@@ -86,10 +102,6 @@ For head configuration check out [vue-head](https://github.com/ktquez/vue-head)
                 myVar2: '',
                 asyncExample: ''
             };
-        },
-        async asyncData() {
-            let res = await axios.get('http://example.org/');
-            return {asyncExample: res.data.example}
         },
         metaInfo: {
             title: 'Default Title',
