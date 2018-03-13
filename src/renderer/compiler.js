@@ -151,6 +151,12 @@ class Compiler implements ICompiler {
             }
           }
 
+        this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css.map`), (error, data) => {
+          if (!error && data) {
+            filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath + '.map', data.toString());
+          }
+        });
+
           this.fs.readFile(path.normalize(`${this.options.outputPath}/${fileName}.js`), (error, data) => {
             const compilingWaitingQueue = compilingWaitingQueueMap.get(filePath);
             if (error) {
@@ -188,14 +194,12 @@ class Compiler implements ICompiler {
 
   getLoaders(): Object {
     function generateLoaders(loader, loaderOptions) {
-      let loaders = [
-        'css-loader'
-      ];
+      let loaders = ['css-loader?sourceMap'];
       if (loader) {
         loaders.push({
           loader: loader + '-loader',
           options: Object.assign({}, loaderOptions, {
-            sourceMap: false
+            sourceMap: true
           })
         })
       }
