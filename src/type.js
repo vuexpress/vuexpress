@@ -3,6 +3,7 @@ import typeof FileSystem from 'fs';
 
 export type CompilerOptions = {
   config: Object,
+  configCallback?: Function,
   metaInfo: Object,
   sassResources: string,
   basePath: string,
