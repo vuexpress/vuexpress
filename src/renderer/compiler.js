@@ -9,6 +9,7 @@ const webpack = require('webpack');
 const nodeVersion = require('node-version');
 const webpackMerge = require('webpack-merge');
 const ErrorTypes = require('../error');
+const cssnext = require('postcss-cssnext')();
 // $flow-disable-line
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const cacheMap: Map<string, any> = new Map();
@@ -22,6 +23,7 @@ const defaultOptions: CompilerOptions = {
   watch: false,
   globals: Object.create(null),
   config: Object.create(null),
+  compilerConfigCallback: null,
   metaInfo: {
     link: [],
     style: [],
@@ -195,7 +197,7 @@ class Compiler implements ICompiler {
 
   getLoaders(): Object {
     function generateLoaders(loader, loaderOptions) {
-      let loaders = ['css-loader?sourceMap'];
+      let loaders = ['css-loader?sourceMap&minimize=' + (process.env.NODE_ENV === 'production' ? 'true' : 'false')];
       if (loader) {
         loaders.push({
           loader: loader + '-loader',
@@ -259,7 +261,8 @@ class Compiler implements ICompiler {
             loader: 'vue-loader',
             options: {
               loaders: loaders,
-              extractCSS: true
+              extractCSS: true,
+              postcss: [cssnext]
             },
           },
         },
@@ -291,7 +294,13 @@ class Compiler implements ICompiler {
       ],
     };
 
-    return webpackMerge.smart(defaultConfig, this.options.config);
+    let webpackMerged = webpackMerge.smart(defaultConfig, this.options.config);
+
+    if(typeof this.options.configCallback === 'function') {
+      webpackMerged = this.options.configCallback(webpackMerged);
+    }
+
+    return webpackMerged;
   }
 
   /**

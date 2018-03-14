@@ -12,6 +12,7 @@ const mfs = new MemoryFS();
 const defaultOptions = {
   metaInfo: {},
   compilerConfig: {},
+  compilerConfigCallback: null,
   preCompile: [],
   preCompileAll: true,
   plugins: [],
@@ -48,6 +49,7 @@ function rendererFactory(vOptions?: VueRendererOptionParams): Renderer {
 
   const compilerOptions = {
     config: options.compilerConfig,
+    configCallback: options.compilerConfigCallback,
     basePath: path.resolve(basePath),
     watch: options.watch,
     globals: options.globals,

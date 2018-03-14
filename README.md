@@ -63,6 +63,10 @@ let options = {
     compilerConfig: {
         // custom webpack config
     },
+    compilerConfigCallback: function(webpackConfig) {
+        // change the merged webpackconfig if you like
+        return webpackConfig;
+    },
     onError: (err) => {}, // error handler
     onReady: () => {} // ready event handler, when completed the work of initialization
 };

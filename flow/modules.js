@@ -76,6 +76,10 @@ declare module 'vuex' {
   declare module.exports :{ }
 }
 
+declare module 'postcss-cssnext' {
+  declare module.exports : () => { }
+}
+
 declare module 'vue-router' {
   declare module.exports :{ }
 }
