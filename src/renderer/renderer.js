@@ -34,6 +34,7 @@ Vue.use(Vuex);
 const defaultRendererOptions: RendererOptions = {
   metaInfo: Object.create(null),
   plugins: [],
+  mixins: [],
   preCompile: [],
   preCompileAll: true,
   globals: Object.create(null),
@@ -57,6 +58,9 @@ class Renderer extends EventEmitter implements IRenderer {
     this.compiler = compiler;
     this.vueRenderer = vueServerRenderer.createRenderer();
     this.options = Object.assign({}, defaultRendererOptions, options);
+    this.options.mixins.forEach((mixin)=>{
+      Vue.mixin(mixin);
+    });
     this.init();
   }
 

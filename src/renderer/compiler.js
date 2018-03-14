@@ -26,6 +26,7 @@ const defaultOptions: CompilerOptions = {
     link: [],
     style: [],
   },
+  sassResources: '',
   outputPath: '/tmp/vuexpress_ssr',
   cssOutputPath: 'style.css',
   publicPath: 'public',
@@ -211,8 +212,8 @@ class Compiler implements ICompiler {
 
     return {
       css: generateLoaders(),
-      sass: generateLoaders('sass', {indentedSyntax: true}),
-      scss: generateLoaders('sass'),
+      sass: generateLoaders('sass', {indentedSyntax: true, data: this.options.sassResources}),
+      scss: generateLoaders('sass', {data: this.options.sassResources}),
     }
   }
 

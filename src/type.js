@@ -4,6 +4,7 @@ import typeof FileSystem from 'fs';
 export type CompilerOptions = {
   config: Object,
   metaInfo: Object,
+  sassResources: string,
   basePath: string,
   watch: boolean,
   cache: boolean,
@@ -45,6 +46,7 @@ export type RendererOptions = {
 export type RendererOptionParams = {
   metaInfo?: Object,
   plugins?: Array<string | Object>,
+  mixins?: Array<Object>,
   preCompile?: Array<string>,
   preCompileAll: boolean,
   globals?: Object
