@@ -181,7 +181,7 @@ class Renderer extends EventEmitter implements IRenderer {
       }
 
       // $flow-disable-line
-      component.$options.metaInfo = Object.assign({}, component.$options.metaInfo, this.compiler.options.metaInfo);
+      component.$options.metaInfo = Object.assign({}, this.compiler.options.metaInfo, component.$options.metaInfo);
 
       // $flow-disable-line
       const template = Renderer.getTemplateHtml(component.$meta().inject(), context.state, this.options.globals);
@@ -214,7 +214,7 @@ class Renderer extends EventEmitter implements IRenderer {
         }
 
         // $flow-disable-line
-        component.$options.metaInfo = Object.assign({}, component.$options.metaInfo, this.compiler.options.metaInfo);
+        component.$options.metaInfo = Object.assign({}, this.compiler.options.metaInfo, component.$options.metaInfo);
         // $flow-disable-line
         const indexHtml = Renderer.getTemplateHtml(component.$meta().inject(), context.state, this.options.globals);
         const html = `${indexHtml.head}${result}${indexHtml.tail}`;
