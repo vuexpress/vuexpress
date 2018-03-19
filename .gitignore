@@ -153,4 +153,4 @@ fabric.properties
 # *.ipr
 
 .idea/
-.lib/
+lib/
