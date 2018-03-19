@@ -24,6 +24,7 @@ const defaultOptions: CompilerOptions = {
   globals: Object.create(null),
   config: Object.create(null),
   compilerConfigCallback: null,
+  watchCallback: null,
   metaInfo: {
     link: [],
     style: [],
@@ -101,6 +102,10 @@ class Compiler implements ICompiler {
         if (error) {
           reject(new ErrorTypes.CompilerError(error));
           return;
+        }
+
+        if(this.options.watch && this.options.watchCallback) {
+          this.options.watchCallback(stats);
         }
 
         const info = stats.toJson();

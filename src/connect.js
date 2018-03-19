@@ -33,6 +33,10 @@ function vueRenderer(baseOptions: VueRendererOptionParams) {
       const renderOptions = Object.assign({}, {url}, options);
       return renderer.renderToStream(filePath, state, renderOptions).then((stream) => {
         stream.on('data', chunk => res.write(chunk));
+        // trigger callback if set
+        if(baseOptions.beforeEndCallback) {
+          baseOptions.beforeEndCallback(stream, res);
+        }
         stream.on('end', () => res.end());
       }).catch((e) => {
         const error = new ErrorTypes.RenderError(e);

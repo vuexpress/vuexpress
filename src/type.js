@@ -3,7 +3,8 @@ import typeof FileSystem from 'fs';
 
 export type CompilerOptions = {
   config: Object,
-  configCallback?: Function,
+  compilerConfigCallback: ?Function,
+  watchCallback: ?Function,
   metaInfo: Object,
   sassResources: string,
   basePath: string,
@@ -45,10 +46,10 @@ export type RendererOptions = {
 };
 
 export type RendererOptionParams = {
-  metaInfo?: Object,
-  plugins?: Array<string | Object>,
-  mixins?: Array<Object>,
-  preCompile?: Array<string>,
+  metaInfo: ?Object,
+  plugins: ?Array<string | Object>,
+  mixins: ?Array<Object>,
+  preCompile: ?Array<string>,
   preCompileAll: boolean,
   globals?: Object
 };
@@ -98,6 +99,7 @@ export type VueRendererOptionParams = {
   views: string,
   globals?: Object,
   onReady: () => void,
-  onError: (e: Object) => void
+  onError: (e: Object) => void,
+  beforeEndCallback: ?Function
 }
 
