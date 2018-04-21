@@ -195,7 +195,7 @@ class Compiler implements ICompiler {
    * @memberof Compiler
    */
   getObject(sourceFile: string): any {
-    const sandboxGlobal = Object.assign({}, defaultOptions.globals, {module, require}, this.options.globals);
+    const sandboxGlobal = Object.assign({}, defaultOptions.globals, {module, require, console}, this.options.globals);
     const sandbox = vm.createContext(sandboxGlobal);
     return vm.runInContext(sourceFile, sandbox);
   }
