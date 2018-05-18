@@ -1,11 +1,17 @@
 const path = require('path');
 const express = require('express');
-const vueRenderer = require('@doweb/vuexpress').vueRenderer;
+const vueRenderer = require('/Users/dweber/WorkspacePrivate/vuexpress/lib/index.js').vueRenderer;
 
 const app = express();
 
 let options = {
+  cache: false,
+  watch: true,
+  preCompileAll: false,
   views: './views',
+  cssOutputPath: 'css/style.css',
+  publicPath: path.join(__dirname, 'public'),
+  sassResources: '@import "/Users/dweber/WorkspacePrivate/vuexpress/examples/express/vars.scss";',
   onError: (err) => {
     console.log(err)
   },

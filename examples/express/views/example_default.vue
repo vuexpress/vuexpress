@@ -25,9 +25,21 @@
 
 <style lang="scss">
     body {
-        #app {
+
             font-size: 16px;
             font-weight: bold;
-        }
+      color: black;
+
     }
+    :root {
+      --red: #d33;
+    }
+    a {
+      &:hover {
+        color: color(var(--red) a(54%));
+      }
+    }
+  ::placeholder {
+    color:red;
+  }
 </style>

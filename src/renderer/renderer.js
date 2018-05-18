@@ -175,7 +175,6 @@ class Renderer extends EventEmitter implements IRenderer {
         this.emit('error', error);
       });
 
-
       if (isPlain) {
         if (includeCSS) {
           bodyStream.push(new Buffer(`<style type="text/css">${this.compiler.compiledCSS}</style>`));
