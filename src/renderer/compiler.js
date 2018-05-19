@@ -8,7 +8,7 @@ const filesystem = require('fs');
 const webpack = require('webpack');
 const nodeVersion = require('node-version');
 const webpackMerge = require('webpack-merge');
-const { VueLoaderPlugin } = require('vue-loader');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const ErrorTypes = require('../error');
 const nodeExternals = require('webpack-node-externals');
 // $flow-disable-line
@@ -228,6 +228,24 @@ class Compiler implements ICompiler {
       module: {
         rules: [
           {
+            test: /\.vue$/,
+            loader: 'vue-loader'
+          },
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  ['env', {targets: {node: Number(nodeVersion.major)}}],
+                ],
+                plugins: ['transform-object-rest-spread'],
+                babelrc: false,
+              },
+            },
+          },
+          {
             test: /\.css$/,
             use: [
               MiniCssExtractPlugin.loader,
@@ -273,35 +291,6 @@ class Compiler implements ICompiler {
                 }
               },
             ]
-          },
-          {
-            test: /\.js$/,
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                ['env', {targets: {node: Number(nodeVersion.major)}}],
-              ],
-              plugins: ['transform-object-rest-spread'],
-              babelrc: false,
-            },
-          },
-          {
-            test: /\.vue$/,
-            loader: 'vue-loader'
-          },
-          {
-            test: /\.js$/,
-            exclude: /node_modules/,
-            use: {
-              loader: 'babel-loader',
-              options: {
-                presets: [
-                  ['env', {targets: {node: Number(nodeVersion.major)}}],
-                ],
-                plugins: ['transform-object-rest-spread'],
-                babelrc: false,
-              },
-            },
           }
         ],
       },
@@ -326,7 +315,7 @@ class Compiler implements ICompiler {
     };
 
     let webpackMerged = webpackMerge.smart(defaultConfig, this.options.config);
-
+console.log(webpackMerged)
     if(typeof this.options.configCallback === 'function') {
       webpackMerged = this.options.configCallback(webpackMerged);
     }
