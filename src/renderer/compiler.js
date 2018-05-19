@@ -315,7 +315,7 @@ class Compiler implements ICompiler {
     };
 
     let webpackMerged = webpackMerge.smart(defaultConfig, this.options.config);
-console.log(webpackMerged)
+
     if(typeof this.options.configCallback === 'function') {
       webpackMerged = this.options.configCallback(webpackMerged);
     }
