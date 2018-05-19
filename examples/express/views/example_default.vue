@@ -22,12 +22,3 @@
     components: {}
   }
 </script>
-
-<style lang="scss">
-  body {
-    #app {
-      font-size: 16px;
-      font-weight: bold;
-    }
-  }
-</style>

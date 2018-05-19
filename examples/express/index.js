@@ -1,6 +1,6 @@
 const path = require('path');
 const express = require('express');
-const vueRenderer = require('@doweb/vuexpress').vueRenderer;
+const vueRenderer = require('/Users/dweber/WorkspacePrivate/vuexpress/lib/index.js').vueRenderer;
 
 const app = express();
 
