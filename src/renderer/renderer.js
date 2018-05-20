@@ -12,7 +12,6 @@ import type {
 const EventEmitter = require('events');
 const Vue = require('vue');
 const Vuex = require('vuex');
-const serialize = require('serialize-javascript');
 const vueServerRenderer = require('vue-server-renderer');
 const SSRPlugin = require('../plugins/server');
 const StreamTransform = require('./transform');
@@ -36,7 +35,6 @@ const defaultRendererOptions: RendererOptions = {
   plugins: [],
   mixins: [],
   preCompile: [],
-  preCompileAll: true,
   globals: Object.create(null),
 };
 
@@ -110,7 +108,7 @@ class Renderer extends EventEmitter implements IRenderer {
       return Promise.resolve(this.Vue);
     }
 
-    return Promise.all(needCompiledPlugins.map(pluginPath => this.compiler.import(pluginPath)))
+    return Promise.all(needCompiledPlugins.map(pluginPath => this.compiler.import(pluginPath, options)))
       .then((plugins) => {
         plugins.forEach((plugin) => {
           if (plugin.default && plugin.default.install) {
@@ -127,15 +125,15 @@ class Renderer extends EventEmitter implements IRenderer {
   /**
    * get the component
    *
-   * @param {string} path
-   * @param {RendererContext} context
-   * @returns {Promise<Vue>}
-   * @memberof Renderer
+   * @param path
+   * @param context
+   * @param requestOptions
+   * @returns {Promise<*[]>}
    */
-  getComponent(path: string, context: RendererContext): Promise<Vue> {
+  getComponent(path: string, context: RendererContext, requestOptions: Object): Promise<Vue> {
     return Promise.all([
       this.getVueClass(),
-      this.compiler.import(path).then(object => object.default || object),
+      this.compiler.import(path, requestOptions).then(object => object.default || object),
     ]).then(([VueClass, VueOptions]) => {
       const SSRVueOptions = Object.assign({}, VueOptions, {$context: context});
       const component = new VueClass(SSRVueOptions);
@@ -158,10 +156,14 @@ class Renderer extends EventEmitter implements IRenderer {
       state: state || {},
       url: options ? options.url : '/',
     };
-    const isPlain = options && options.plain;
-    const includeCSS = options && options.includeCSS;
+    const isPlain = typeof options.plain === "undefined" ? false : options.plain;
+    const inlineCSS = typeof options.inlineCSS === "undefined" ? false : options.inlineCSS;
+    const requestOptions = {
+      isPlain: isPlain,
+      inlineCSS: inlineCSS,
+    };
 
-    return this.getComponent(path, context).then((component) => {
+    return this.getComponent(path, context, requestOptions).then((component) => {
       const bodyStream = this.vueRenderer.renderToStream(component);
       bodyStream.on('error', (e) => {
         let error;
@@ -175,12 +177,11 @@ class Renderer extends EventEmitter implements IRenderer {
         this.emit('error', error);
       });
 
+      if (inlineCSS) {
+        bodyStream.push(new Buffer(`<style type="text/css">${this.compiler.compiledCSS}</style>`));
+      }
 
       if (isPlain) {
-        if (includeCSS) {
-          bodyStream.push(new Buffer(`<style type="text/css">${this.compiler.compiledCSS}</style>`));
-        }
-
         return bodyStream;
       }
 
@@ -199,9 +200,14 @@ class Renderer extends EventEmitter implements IRenderer {
       state: state || {},
       url: options ? options.url : '/',
     };
-    const isPlain = options && options.plain;
-    const includeCSS = options && options.includeCSS;
-    return this.getComponent(path, context).then(component => new Promise((resolve, reject) => {
+    const isPlain = typeof options.plain === "undefined" ? false : options.plain;
+    const inlineCSS = typeof options.inlineCSS === "undefined" ? false : options.inlineCSS;
+    const requestOptions = {
+      isPlain: isPlain,
+      inlineCSS: inlineCSS,
+    };
+
+    return this.getComponent(path, context, requestOptions).then(component => new Promise((resolve, reject) => {
       this.vueRenderer.renderToString(component, (e, result) => {
         if (e) {
           e.component = path;
@@ -209,10 +215,11 @@ class Renderer extends EventEmitter implements IRenderer {
           return;
         }
 
+        if (inlineCSS) {
+          result = `<style type="text/css">${this.compiler.compiledCSS}</style>` + result;
+        }
+
         if (isPlain) {
-          if (includeCSS) {
-            result = `<style type="text/css">${this.compiler.compiledCSS}</style>` + result;
-          }
           resolve(result);
           return;
         }

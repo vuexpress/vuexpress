@@ -1,11 +1,13 @@
 const path = require('path');
 const express = require('express');
-const vueRenderer = require('@doweb/vuexpress').vueRenderer;
+const vueRenderer = require('/Users/dweber/WorkspacePrivate/vuexpress/lib/index.js').vueRenderer;
 
 const app = express();
 
 let options = {
   views: './views',
+  cache: false,
+  watch: true,
   onError: (err) => {
     console.log(err)
   },
@@ -21,6 +23,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
   res.render('example_default', {myVar: 'Hello World!'});
+});
+app.get('/test', function (req, res) {
+  res.render('example_default2', {myVar: 'Hello World!'});
 });
 
 app.get('/example_template_only', function (req, res) {

@@ -21,7 +21,7 @@ $ npm i @doweb/vuexpress --save
 You need to install the peer dependencies as well
 
 ```bash
-$ npm i vue vuex vue-loader css-loader vue-template-compiler node-sass sass-loader extract-text-webpack-plugin webpack babel-core babel-loader babel-plugin-transform-object-rest-spread babel-preset-env --save
+$ npm i vue vuex vue-loader css-loader vue-template-compiler node-sass sass-loader postcss-loader postcss-loader webpack-node-externals webpack-merge webpack babel-core babel-loader babel-plugin-transform-object-rest-spread babel-preset-env --save
 ```
 
 ## Usage
@@ -36,12 +36,10 @@ const app = express();
 let options = {
     // folder with your views
     views: './views',
-    // precompile the template
-    preCompile: ['example.vue'],
-    // pre compile all templates in the view folder
-    preCompileAll: true,
     // cache templates
     cache: true,
+    // use watch = true only in dev mode! Will start webpack watcher only on the current request.
+    watch: false,
     // meta info - check out https://github.com/ktquez/vue-head for more information
     metaInfo: {
       title: 'Default Title'
@@ -80,7 +78,7 @@ app.get('/', function(req, res) {
 
 app.get('/plain', function(req, res) {
     // render template without html head and body
-    res.render('example', { myVar1: 'my variable one' }, { plain: true, includeCSS: false });
+    res.render('example', { myVar1: 'my variable one' }, { plain: true, inlineCSS: false });
 });
 ```
 

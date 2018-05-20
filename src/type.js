@@ -30,7 +30,7 @@ export type CompilerOptionParams = {
 export interface ICompiler {
   constructor(fs: FileSystem, compilerOptions: CompilerOptionParams): void;
 
-  import(request: string): Promise<any>;
+  import(request: string, options: Object): Promise<any>;
 
   load(requests: Array<string>): Promise<void>;
 
@@ -41,7 +41,6 @@ export type RendererOptions = {
   metaInfo: Object,
   plugins: Array<string | Object>,
   preCompile: Array<string>,
-  preCompileAll: boolean,
   globals: Object
 };
 
@@ -50,7 +49,6 @@ export type RendererOptionParams = {
   plugins: ?Array<string | Object>,
   mixins: ?Array<Object>,
   preCompile: ?Array<string>,
-  preCompileAll: boolean,
   globals?: Object
 };
 
@@ -62,7 +60,7 @@ export type RendererContext = {
 export type RenderOptions = {
   url: string,
   plain: boolean,
-  includeCSS: boolean,
+  inlineCSS: boolean,
 }
 
 export type MetaOptions = {
@@ -92,7 +90,6 @@ export type VueRendererOptionParams = {
   metaInfo?: Object,
   compilerConfig?: Object,
   preCompile?: Array<string>,
-  preCompileAll: boolean,
   plugins?: Array<string | Object>,
   watch?: boolean,
   outputPath?: string,
