@@ -69,7 +69,7 @@ class Compiler implements ICompiler {
    * @returns {Promise<any>}
    * @memberof Compiler
    */
-  import(request: string): Promise<any> {
+  import(request: string, options: Array): Promise<any> {
     if (this.options.cache && Compiler.cacheMap.has(request)) {
       return Promise.resolve(Compiler.cacheMap.get(request));
     }
@@ -80,7 +80,7 @@ class Compiler implements ICompiler {
 
     const resultPromise = new Promise((resolve, reject) =>
       compilingWaitingQueueMap.set(request, [{resolve, reject}]));
-    return this.load([request]).then(() => resultPromise);
+    return this.load([request], options).then(() => resultPromise);
   }
 
   /**
@@ -151,11 +151,13 @@ class Compiler implements ICompiler {
   /**
    * load file into cache
    *
-   * @param {Array<string>} filePaths
-   * @returns {Promise<void>}
-   * @memberof Compiler
+   * @param filePaths
+   * @param requestOptions
+   * @returns {*}
    */
-  load(filePaths: Array<string>): Promise<void> {
+  load(filePaths: Array<string>, requestOptions: Array): Promise<void> {
+    let isInlineCss = typeof requestOptions === 'undefined' ? false : requestOptions.includeCSS;
+
     if (filePaths.length === 0) return Promise.resolve();
     filePaths.forEach((filePath) => {
       if (!compilingWaitingQueueMap.has(filePath)) {
@@ -166,7 +168,7 @@ class Compiler implements ICompiler {
     return this.compile(filePaths).then(() => Promise.all(filePaths.map(filePath =>
       new Promise((resolve, reject) => {
 
-        if (this.options.watch || this.isFirstRun === true) {
+        if (isInlineCss === false && (this.options.watch || this.isFirstRun === true)) {
           this.isFirstRun = false;
           this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css`), (error, data) => {
             if (!error && data) {

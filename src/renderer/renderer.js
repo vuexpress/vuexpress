@@ -108,7 +108,7 @@ class Renderer extends EventEmitter implements IRenderer {
       return Promise.resolve(this.Vue);
     }
 
-    return Promise.all(needCompiledPlugins.map(pluginPath => this.compiler.import(pluginPath)))
+    return Promise.all(needCompiledPlugins.map(pluginPath => this.compiler.import(pluginPath, {includeCSS: options && options.includeCSS})))
       .then((plugins) => {
         plugins.forEach((plugin) => {
           if (plugin.default && plugin.default.install) {
@@ -133,7 +133,7 @@ class Renderer extends EventEmitter implements IRenderer {
   getComponent(path: string, context: RendererContext): Promise<Vue> {
     return Promise.all([
       this.getVueClass(),
-      this.compiler.import(path).then(object => object.default || object),
+      this.compiler.import(path, {includeCSS: options && options.includeCSS}).then(object => object.default || object),
     ]).then(([VueClass, VueOptions]) => {
       const SSRVueOptions = Object.assign({}, VueOptions, {$context: context});
       const component = new VueClass(SSRVueOptions);
