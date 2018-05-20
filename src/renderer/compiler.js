@@ -249,6 +249,7 @@ class Compiler implements ICompiler {
         style: entry
       },
       target: 'node',
+      mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       output: {
         path: this.options.outputPath,
         filename: '[name].js',
