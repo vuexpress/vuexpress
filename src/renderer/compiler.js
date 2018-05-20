@@ -122,7 +122,8 @@ class Compiler implements ICompiler {
         return new Promise((resolve) => {
 
           const startWatcher = () => {
-            this.watcher = serverCompiler.watch({}, (error, stats) => {
+            let tmpWatcher = serverCompiler.watch({}, (error, stats) => {
+              this.watcher = tmpWatcher;
               cb(error, stats);
               resolve();
             });
