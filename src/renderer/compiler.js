@@ -156,7 +156,7 @@ class Compiler implements ICompiler {
    * @returns {*}
    */
   load(filePaths: Array<string>, requestOptions: Object): Promise<void> {
-    let isInlineCss = typeof requestOptions === 'undefined' ? false : requestOptions.includeCSS;
+    let isInlineCss = typeof requestOptions === 'undefined' ? false : requestOptions.inlineCSS;
 
     if (filePaths.length === 0) return Promise.resolve();
     filePaths.forEach((filePath) => {
@@ -194,6 +194,10 @@ class Compiler implements ICompiler {
                     if (!error && data) {
                       filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath + '.map', data.toString());
                     }
+                  });
+                } else {
+                  this.options.metaInfo.link = this.options.metaInfo.link.filter((item)=>{
+                    return item.href !== this.options.cssOutputPath;
                   });
                 }
               } else {

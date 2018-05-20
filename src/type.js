@@ -60,7 +60,7 @@ export type RendererContext = {
 export type RenderOptions = {
   url: string,
   plain: boolean,
-  includeCSS: boolean,
+  inlineCSS: boolean,
 }
 
 export type MetaOptions = {

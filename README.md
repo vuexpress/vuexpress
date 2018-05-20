@@ -78,7 +78,7 @@ app.get('/', function(req, res) {
 
 app.get('/plain', function(req, res) {
     // render template without html head and body
-    res.render('example', { myVar1: 'my variable one' }, { plain: true, includeCSS: false });
+    res.render('example', { myVar1: 'my variable one' }, { plain: true, inlineCSS: false });
 });
 ```
 

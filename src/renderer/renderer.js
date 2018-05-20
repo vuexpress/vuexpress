@@ -157,10 +157,10 @@ class Renderer extends EventEmitter implements IRenderer {
       url: options ? options.url : '/',
     };
     const isPlain = typeof options.plain === "undefined" ? false : options.plain;
-    const includeCSS = typeof options.includeCSS === "undefined" ? false : options.includeCSS;
+    const inlineCSS = typeof options.inlineCSS === "undefined" ? false : options.inlineCSS;
     const requestOptions = {
       isPlain: isPlain,
-      includeCSS: includeCSS,
+      inlineCSS: inlineCSS,
     };
 
     return this.getComponent(path, context, requestOptions).then((component) => {
@@ -177,7 +177,7 @@ class Renderer extends EventEmitter implements IRenderer {
         this.emit('error', error);
       });
 
-      if (includeCSS) {
+      if (inlineCSS) {
         bodyStream.push(new Buffer(`<style type="text/css">${this.compiler.compiledCSS}</style>`));
       }
 
@@ -201,10 +201,10 @@ class Renderer extends EventEmitter implements IRenderer {
       url: options ? options.url : '/',
     };
     const isPlain = typeof options.plain === "undefined" ? false : options.plain;
-    const includeCSS = typeof options.includeCSS === "undefined" ? false : options.includeCSS;
+    const inlineCSS = typeof options.inlineCSS === "undefined" ? false : options.inlineCSS;
     const requestOptions = {
       isPlain: isPlain,
-      includeCSS: includeCSS,
+      inlineCSS: inlineCSS,
     };
 
     return this.getComponent(path, context, requestOptions).then(component => new Promise((resolve, reject) => {
@@ -215,7 +215,7 @@ class Renderer extends EventEmitter implements IRenderer {
           return;
         }
 
-        if (includeCSS) {
+        if (inlineCSS) {
           result = `<style type="text/css">${this.compiler.compiledCSS}</style>` + result;
         }
 
