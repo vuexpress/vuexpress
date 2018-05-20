@@ -25,6 +25,6 @@
 
 <style lang="scss">
   body {
-   color:black;
+    color:black;
   }
 </style>
