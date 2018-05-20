@@ -156,8 +156,8 @@ class Renderer extends EventEmitter implements IRenderer {
       state: state || {},
       url: options ? options.url : '/',
     };
-    const isPlain = options && options.plain;
-    const includeCSS = options && options.includeCSS;
+    const isPlain = typeof options.plain === "undefined" ? false : options.plain;
+    const includeCSS = typeof options.includeCSS === "undefined" ? false : options.includeCSS;
     const requestOptions = {
       isPlain: isPlain,
       includeCSS: includeCSS,
@@ -200,8 +200,8 @@ class Renderer extends EventEmitter implements IRenderer {
       state: state || {},
       url: options ? options.url : '/',
     };
-    const isPlain = options && options.plain;
-    const includeCSS = options && options.includeCSS;
+    const isPlain = typeof options.plain === "undefined" ? false : options.plain;
+    const includeCSS = typeof options.includeCSS === "undefined" ? false : options.includeCSS;
     const requestOptions = {
       isPlain: isPlain,
       includeCSS: includeCSS,
