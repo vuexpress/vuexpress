@@ -9,7 +9,6 @@ const webpack = require('webpack');
 const nodeVersion = require('node-version');
 const webpackMerge = require('webpack-merge');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const ErrorTypes = require('../error');
 const nodeExternals = require('webpack-node-externals');
 // $flow-disable-line
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -48,11 +47,15 @@ class Compiler implements ICompiler {
   static cacheMap: Map<string, any>;
   fs: FileSystem;
   compiledCSS: string;
+  isFirstRun: boolean;
+  watchFile: string;
+  watcher: Object;
   options: CompilerOptions;
 
   constructor(fs: FileSystem, options?: CompilerOptionParams) {
     this.options = Object.assign({}, defaultOptions, options);
     this.fs = fs;
+    this.isFirstRun = true;
 
     delete this.options.config.output;
   }
@@ -95,30 +98,52 @@ class Compiler implements ICompiler {
     const webpackConfig = this.getConfig(fileMap);
     const serverCompiler = webpack(webpackConfig);
     serverCompiler.outputFileSystem = this.fs;
-    const runner = this.options.watch
-      ? cb => serverCompiler.watch({}, cb)
-      : cb => serverCompiler.run(cb);
-    return new Promise((resolve, reject) => {
-      runner((error, stats) => {
-        if (error) {
-          reject(new ErrorTypes.CompilerError(error));
-          return;
-        }
 
-        if(this.options.watch && this.options.watchCallback) {
-          this.options.watchCallback(stats);
-        }
+    const cb = (error, stats) => {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      const info = stats.toJson();
+      if (stats.hasErrors()) {
+        console.error(info.errors)
+      }
 
-        const info = stats.toJson();
-        if (stats.hasErrors()) {
-          const e = new ErrorTypes.CompilerError();
-          e.errors = info.errors;
-          reject(e);
-        } else {
+      if (this.options.watchCallback) {
+        this.options.watchCallback(stats);
+      }
+    };
+
+    if(this.options.watch) {
+      let fileKey = filePaths.join('');
+
+      if(this.watchFile !== fileKey) {
+        this.watchFile = fileKey;
+        return new Promise((resolve) => {
+          const startWatcher = () => {
+            this.watcher = serverCompiler.watch({}, (error, stats) => {
+              cb(error, stats);
+              resolve();
+            })
+          };
+          if(this.watcher) {
+            this.watcher.close(startWatcher);
+          } else {
+            startWatcher();
+          }
+        });
+      } else {
+        return Promise.resolve();
+      }
+
+    } else {
+      return new Promise((resolve) => {
+        serverCompiler.run((error, stats) => {
+          cb(error, stats);
           resolve();
-        }
+        })
       });
-    });
+    }
   }
 
   /**
@@ -138,56 +163,57 @@ class Compiler implements ICompiler {
 
     return this.compile(filePaths).then(() => Promise.all(filePaths.map(filePath =>
       new Promise((resolve, reject) => {
-        const fileName = Compiler.getFileNameByPath(filePath);
 
-        this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css`), (error, data) => {
-          if (!error && data) {
+        if (this.options.watch || this.isFirstRun === true) {
+          this.isFirstRun = false;
+          this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css`), (error, data) => {
+            if (!error && data) {
 
-            this.compiledCSS = data.toString();
+              this.compiledCSS = data.toString();
 
-            if (this.options.extractCSS) {
-              filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath, this.compiledCSS);
+              if (this.options.extractCSS) {
+                filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath, this.compiledCSS);
 
-              let styleObj = {rel: 'stylesheet', href: this.options.cssOutputPath};
+                let styleObj = {rel: 'stylesheet', href: this.options.cssOutputPath};
 
-              if (this.options.metaInfo.link && !this.options.metaInfo.link.find((item) => {
+                if (this.options.metaInfo.link && !this.options.metaInfo.link.find((item) => {
                   return item.href === styleObj.href;
                 })) {
-                this.options.metaInfo.link.push(styleObj);
-              } else if(!this.options.metaInfo.link) {
-                this.options.metaInfo.link = [styleObj];
+                  this.options.metaInfo.link.push(styleObj);
+                } else if (!this.options.metaInfo.link) {
+                  this.options.metaInfo.link = [styleObj];
+                }
+              } else {
+                this.options.metaInfo.style.push({type: 'text/css', cssText: this.compiledCSS});
               }
-            } else {
-              this.options.metaInfo.style.push({type: 'text/css', cssText: this.compiledCSS});
             }
+
+            this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css.map`), (error, data) => {
+              if (!error && data) {
+                filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath + '.map', data.toString());
+              }
+            });
+          });
+        }
+
+        this.fs.readFile(path.normalize(`${this.options.outputPath}/style.js`), (error, data) => {
+          const compilingWaitingQueue = compilingWaitingQueueMap.get(filePath);
+          if (error) {
+            if (compilingWaitingQueue) {
+              compilingWaitingQueue.forEach(callback => callback.reject(error));
+            }
+            reject(error);
+            return;
           }
 
-          this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css.map`), (error, data) => {
-            if (!error && data) {
-              filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath + '.map', data.toString());
-            }
-          });
-
-          this.fs.readFile(path.normalize(`${this.options.outputPath}/${fileName}.js`), (error, data) => {
-            const compilingWaitingQueue = compilingWaitingQueueMap.get(filePath);
-            if (error) {
-              if (compilingWaitingQueue) {
-                compilingWaitingQueue.forEach(callback => callback.reject(error));
-              }
-              reject(error);
-              return;
-            }
-
-            const object = this.getObject(data.toString());
-            Compiler.cacheMap.set(filePath, object);
-            if (compilingWaitingQueue) {
-              compilingWaitingQueue.forEach(callback => callback.resolve(object));
-            }
-            compilingWaitingQueueMap.delete(filePath);
-            resolve();
-          });
+          const object = this.getObject(data.toString());
+          Compiler.cacheMap.set(filePath, object);
+          if (compilingWaitingQueue) {
+            compilingWaitingQueue.forEach(callback => callback.resolve(object));
+          }
+          compilingWaitingQueueMap.delete(filePath);
+          resolve();
         });
-
       }))).then());
   }
 
@@ -212,13 +238,15 @@ class Compiler implements ICompiler {
    */
   getConfig(fileMap: Map<string, string>): Object {
 
-    const entry = Object.create(null);
+    const entry = [];
     [...fileMap.entries()].forEach(([fileName, filePath]) => {
-      entry[fileName] = [filePath];
+      entry.push(filePath);
     });
 
     const defaultConfig = {
-      entry,
+      entry: {
+        style: entry
+      },
       target: 'node',
       output: {
         path: this.options.outputPath,
@@ -251,7 +279,7 @@ class Compiler implements ICompiler {
               MiniCssExtractPlugin.loader,
               {
                 loader: 'css-loader',
-                options: { sourceMap: true, importLoaders: 1 }
+                options: {sourceMap: true, importLoaders: 1}
               },
               {
                 loader: 'postcss-loader',
@@ -271,7 +299,7 @@ class Compiler implements ICompiler {
               MiniCssExtractPlugin.loader,
               {
                 loader: 'css-loader',
-                options: { sourceMap: true, importLoaders: 1 }
+                options: {sourceMap: true, importLoaders: 1}
               },
               {
                 loader: 'postcss-loader',
@@ -316,7 +344,7 @@ class Compiler implements ICompiler {
 
     let webpackMerged = webpackMerge.smart(defaultConfig, this.options.config);
 
-    if(typeof this.options.configCallback === 'function') {
+    if (typeof this.options.configCallback === 'function') {
       webpackMerged = this.options.configCallback(webpackMerged);
     }
 

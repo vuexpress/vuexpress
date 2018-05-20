@@ -41,7 +41,6 @@ export type RendererOptions = {
   metaInfo: Object,
   plugins: Array<string | Object>,
   preCompile: Array<string>,
-  preCompileAll: boolean,
   globals: Object
 };
 
@@ -50,7 +49,6 @@ export type RendererOptionParams = {
   plugins: ?Array<string | Object>,
   mixins: ?Array<Object>,
   preCompile: ?Array<string>,
-  preCompileAll: boolean,
   globals?: Object
 };
 
@@ -92,7 +90,6 @@ export type VueRendererOptionParams = {
   metaInfo?: Object,
   compilerConfig?: Object,
   preCompile?: Array<string>,
-  preCompileAll: boolean,
   plugins?: Array<string | Object>,
   watch?: boolean,
   outputPath?: string,

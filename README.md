@@ -36,12 +36,10 @@ const app = express();
 let options = {
     // folder with your views
     views: './views',
-    // precompile the template
-    preCompile: ['example.vue'],
-    // pre compile all templates in the view folder
-    preCompileAll: true,
     // cache templates
     cache: true,
+    // use watch = true only in dev mode! Will start webpack watcher only on the current request.
+    watch: false,
     // meta info - check out https://github.com/ktquez/vue-head for more information
     metaInfo: {
       title: 'Default Title'

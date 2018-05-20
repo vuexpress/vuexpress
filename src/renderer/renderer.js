@@ -12,7 +12,6 @@ import type {
 const EventEmitter = require('events');
 const Vue = require('vue');
 const Vuex = require('vuex');
-const serialize = require('serialize-javascript');
 const vueServerRenderer = require('vue-server-renderer');
 const SSRPlugin = require('../plugins/server');
 const StreamTransform = require('./transform');
@@ -36,7 +35,6 @@ const defaultRendererOptions: RendererOptions = {
   plugins: [],
   mixins: [],
   preCompile: [],
-  preCompileAll: true,
   globals: Object.create(null),
 };
 

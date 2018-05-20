@@ -14,7 +14,6 @@ const defaultOptions = {
   compilerConfig: {},
   compilerConfigCallback: null,
   preCompile: [],
-  preCompileAll: true,
   plugins: [],
   mixins: [],
   sassResources: '',
@@ -41,7 +40,7 @@ function rendererFactory(vOptions?: VueRendererOptionParams): Renderer {
   const basePath = options.views;
   options.preCompile = options.preCompile.map(filePath => path.resolve(basePath, filePath));
 
-  if(options.preCompileAll === true) {
+  if(options.watch === false) {
     let files = recursiveReadSync(path.resolve(basePath));
     files = files.filter((file)=>{
       return file.match(/\.vue$/i);
@@ -73,7 +72,6 @@ function rendererFactory(vOptions?: VueRendererOptionParams): Renderer {
     mixins: options.mixins,
     beforeEndCallback: options.beforeEndCallback,
     preCompile: options.preCompile,
-    preCompileAll: options.preCompileAll,
     globals: options.globals,
   };
   const renderer = new Renderer(compiler, rendererOptions);
