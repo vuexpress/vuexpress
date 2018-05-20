@@ -9,7 +9,7 @@
     name: 'Example default',
     data() {
       return {
-        example: 'Hello World 123',
+        example: 'Hello World',
       };
     },
     metaInfo: {
@@ -22,3 +22,9 @@
     components: {}
   }
 </script>
+
+<style lang="scss">
+  body {
+   color:black;
+  }
+</style>

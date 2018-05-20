@@ -6,3 +6,22 @@
     </ul>
   </div>
 </template>
+
+<script>
+  export default {
+    name: 'Example default',
+    data() {
+      return {
+        items: []
+      };
+    }
+  }
+</script>
+
+<style lang="scss">
+  body {
+    p {
+      color:red;
+    }
+  }
+</style>

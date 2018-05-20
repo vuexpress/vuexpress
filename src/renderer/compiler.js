@@ -120,17 +120,18 @@ class Compiler implements ICompiler {
       if(this.watchFile !== fileKey) {
         this.watchFile = fileKey;
         return new Promise((resolve) => {
+
           const startWatcher = () => {
             this.watcher = serverCompiler.watch({}, (error, stats) => {
               cb(error, stats);
               resolve();
-            })
+            });
           };
+
           if(this.watcher) {
-            this.watcher.close(startWatcher);
-          } else {
-            startWatcher();
+            this.watcher.close();
           }
+          startWatcher();
         });
       } else {
         return Promise.resolve();
