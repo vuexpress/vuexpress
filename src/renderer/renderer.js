@@ -173,11 +173,11 @@ class Renderer extends EventEmitter implements IRenderer {
         this.emit('error', error);
       });
 
-      if (isPlain) {
-        if (includeCSS) {
-          bodyStream.push(new Buffer(`<style type="text/css">${this.compiler.compiledCSS}</style>`));
-        }
+      if (includeCSS) {
+        bodyStream.push(new Buffer(`<style type="text/css">${this.compiler.compiledCSS}</style>`));
+      }
 
+      if (isPlain) {
         return bodyStream;
       }
 
@@ -206,10 +206,11 @@ class Renderer extends EventEmitter implements IRenderer {
           return;
         }
 
+        if (includeCSS) {
+          result = `<style type="text/css">${this.compiler.compiledCSS}</style>` + result;
+        }
+
         if (isPlain) {
-          if (includeCSS) {
-            result = `<style type="text/css">${this.compiler.compiledCSS}</style>` + result;
-          }
           resolve(result);
           return;
         }
