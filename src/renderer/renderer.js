@@ -130,7 +130,7 @@ class Renderer extends EventEmitter implements IRenderer {
    * @returns {Promise<Vue>}
    * @memberof Renderer
    */
-  getComponent(path: string, context: RendererContext): Promise<Vue> {
+  getComponent(path: string, context: RendererContext, options: Array): Promise<Vue> {
     return Promise.all([
       this.getVueClass(),
       this.compiler.import(path, {includeCSS: options && options.includeCSS}).then(object => object.default || object),
@@ -159,7 +159,7 @@ class Renderer extends EventEmitter implements IRenderer {
     const isPlain = options && options.plain;
     const includeCSS = options && options.includeCSS;
 
-    return this.getComponent(path, context).then((component) => {
+    return this.getComponent(path, context, options).then((component) => {
       const bodyStream = this.vueRenderer.renderToStream(component);
       bodyStream.on('error', (e) => {
         let error;
@@ -198,7 +198,7 @@ class Renderer extends EventEmitter implements IRenderer {
     };
     const isPlain = options && options.plain;
     const includeCSS = options && options.includeCSS;
-    return this.getComponent(path, context).then(component => new Promise((resolve, reject) => {
+    return this.getComponent(path, context, options).then(component => new Promise((resolve, reject) => {
       this.vueRenderer.renderToString(component, (e, result) => {
         if (e) {
           e.component = path;
