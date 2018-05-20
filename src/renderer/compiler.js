@@ -168,7 +168,7 @@ class Compiler implements ICompiler {
     return this.compile(filePaths).then(() => Promise.all(filePaths.map(filePath =>
       new Promise((resolve, reject) => {
 
-        if (isInlineCss === false && (this.options.watch || this.isFirstRun === true)) {
+        if (this.options.watch || this.isFirstRun === true) {
           this.isFirstRun = false;
           this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css`), (error, data) => {
             if (!error && data) {
@@ -176,27 +176,30 @@ class Compiler implements ICompiler {
               this.compiledCSS = data.toString();
 
               if (this.options.extractCSS) {
-                filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath, this.compiledCSS);
 
-                let styleObj = {rel: 'stylesheet', href: this.options.cssOutputPath};
+                if(isInlineCss === false) {
+                  filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath, this.compiledCSS);
 
-                if (this.options.metaInfo.link && !this.options.metaInfo.link.find((item) => {
-                  return item.href === styleObj.href;
-                })) {
-                  this.options.metaInfo.link.push(styleObj);
-                } else if (!this.options.metaInfo.link) {
-                  this.options.metaInfo.link = [styleObj];
+                  let styleObj = {rel: 'stylesheet', href: this.options.cssOutputPath};
+
+                  if (this.options.metaInfo.link && !this.options.metaInfo.link.find((item) => {
+                    return item.href === styleObj.href;
+                  })) {
+                    this.options.metaInfo.link.push(styleObj);
+                  } else if (!this.options.metaInfo.link) {
+                    this.options.metaInfo.link = [styleObj];
+                  }
+
+                  this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css.map`), (error, data) => {
+                    if (!error && data) {
+                      filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath + '.map', data.toString());
+                    }
+                  });
                 }
               } else {
                 this.options.metaInfo.style.push({type: 'text/css', cssText: this.compiledCSS});
               }
             }
-
-            this.fs.readFile(path.normalize(`${this.options.outputPath}/style.css.map`), (error, data) => {
-              if (!error && data) {
-                filesystem.writeFileSync(this.options.publicPath + '/' + this.options.cssOutputPath + '.map', data.toString());
-              }
-            });
           });
         }
 
