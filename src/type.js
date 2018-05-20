@@ -30,7 +30,7 @@ export type CompilerOptionParams = {
 export interface ICompiler {
   constructor(fs: FileSystem, compilerOptions: CompilerOptionParams): void;
 
-  import(request: string, options: Array): Promise<any>;
+  import(request: string, options: Object): Promise<any>;
 
   load(requests: Array<string>): Promise<void>;
 

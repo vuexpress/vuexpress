@@ -65,11 +65,11 @@ class Compiler implements ICompiler {
    * e.g.
    * const component = await compiler.import('component.vue');
    *
-   * @param {string} request
+   * @param request
+   * @param requestOptions
    * @returns {Promise<any>}
-   * @memberof Compiler
    */
-  import(request: string, options: Array): Promise<any> {
+  import(request: string, requestOptions: Object): Promise<any> {
     if (this.options.cache && Compiler.cacheMap.has(request)) {
       return Promise.resolve(Compiler.cacheMap.get(request));
     }
@@ -80,7 +80,7 @@ class Compiler implements ICompiler {
 
     const resultPromise = new Promise((resolve, reject) =>
       compilingWaitingQueueMap.set(request, [{resolve, reject}]));
-    return this.load([request], options).then(() => resultPromise);
+    return this.load([request], requestOptions).then(() => resultPromise);
   }
 
   /**
@@ -155,7 +155,7 @@ class Compiler implements ICompiler {
    * @param requestOptions
    * @returns {*}
    */
-  load(filePaths: Array<string>, requestOptions: Array): Promise<void> {
+  load(filePaths: Array<string>, requestOptions: Object): Promise<void> {
     let isInlineCss = typeof requestOptions === 'undefined' ? false : requestOptions.includeCSS;
 
     if (filePaths.length === 0) return Promise.resolve();
