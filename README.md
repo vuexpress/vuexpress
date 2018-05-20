@@ -21,7 +21,7 @@ $ npm i @doweb/vuexpress --save
 You need to install the peer dependencies as well
 
 ```bash
-$ npm i vue vuex vue-loader css-loader vue-template-compiler node-sass sass-loader postcss-loader postcss-loader webpack-merge webpack babel-core babel-loader babel-plugin-transform-object-rest-spread babel-preset-env --save
+$ npm i vue vuex vue-loader css-loader vue-template-compiler node-sass sass-loader postcss-loader postcss-loader webpack-node-externals webpack-merge webpack babel-core babel-loader babel-plugin-transform-object-rest-spread babel-preset-env --save
 ```
 
 ## Usage
