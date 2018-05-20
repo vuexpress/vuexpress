@@ -158,8 +158,12 @@ class Renderer extends EventEmitter implements IRenderer {
     };
     const isPlain = options && options.plain;
     const includeCSS = options && options.includeCSS;
+    const requestOptions = {
+      isPlain: isPlain,
+      includeCSS: includeCSS,
+    };
 
-    return this.getComponent(path, context, options).then((component) => {
+    return this.getComponent(path, context, requestOptions).then((component) => {
       const bodyStream = this.vueRenderer.renderToStream(component);
       bodyStream.on('error', (e) => {
         let error;
@@ -198,7 +202,12 @@ class Renderer extends EventEmitter implements IRenderer {
     };
     const isPlain = options && options.plain;
     const includeCSS = options && options.includeCSS;
-    return this.getComponent(path, context, options).then(component => new Promise((resolve, reject) => {
+    const requestOptions = {
+      isPlain: isPlain,
+      includeCSS: includeCSS,
+    };
+
+    return this.getComponent(path, context, requestOptions).then(component => new Promise((resolve, reject) => {
       this.vueRenderer.renderToString(component, (e, result) => {
         if (e) {
           e.component = path;
