@@ -1,6 +1,6 @@
 {
   "name": "@doweb/vuexpress",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Vue + Express.js = VueXpress / A server side rendering engine for Express.js. Use .vue files as your express.js templates.",
   "main": "lib/index.js",
   "scripts": {
