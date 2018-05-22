@@ -25,6 +25,7 @@ const defaultOptions: CompilerOptions = {
   config: Object.create(null),
   compilerConfigCallback: null,
   watchCallback: null,
+  watchCleanUp: true,
   metaInfo: {
     link: [],
     style: [],
@@ -129,7 +130,7 @@ class Compiler implements ICompiler {
             });
           };
 
-          if(this.watcher) {
+          if(this.watcher && this.options.watchCleanUp) {
             this.watcher.close();
           }
           startWatcher();
