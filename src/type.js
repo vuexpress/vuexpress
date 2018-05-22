@@ -5,6 +5,7 @@ export type CompilerOptions = {
   config: Object,
   compilerConfigCallback: ?Function,
   watchCallback: ?Function,
+  watchCleanUp: Boolean,
   metaInfo: Object,
   sassResources: string,
   basePath: string,
