@@ -24,11 +24,6 @@ You need to install the peer dependencies as well
 $ npm i vue vuex vue-loader css-loader vue-template-compiler node-sass sass-loader postcss-loader postcss-loader webpack-node-externals webpack-merge webpack babel-core babel-loader babel-plugin-transform-object-rest-spread babel-preset-env --save
 ```
 
-Or, to automatically install all dependencies:
-```bash
-$ npm i
-```
-
 ## Usage
 
 File: example.js
