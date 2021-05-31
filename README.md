@@ -10,7 +10,7 @@
 
 ## Introduction
 
-VueXpress is a template engine for express.js. You can easily rendering *.vue templates on the server. Check out the usage information.
+VueXpress is a [vuejs](https://vuejs.org) template engine for express.js. You can easily render *.vue templates on the server. Check out the usage information.
 
 ## Install
 
